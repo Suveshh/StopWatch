@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>StopWatch</title>
+    <link
+      href="https://fonts.googleapis.com/css?family=Varela Round"
+      rel="stylesheet"
+    />
+  </head>
+  <style>
+    * {
+      margin: 0%;
+      padding: 0%;
+      font-family: "Varela Round";
+    }
+    .main {
+      height: 100vh;
+      width: 100vw;
+      background-color: rgb(31, 63, 54);
+      text-align: center;
+    }
+    .watch {
+      height: 100%;
+      width: 100%;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+    }
+    .watch p {
+      color: #ffff;
+      font-size: 55px;
+      z-index: 1000;
+      margin-top: 100px;
+      margin-bottom: 100px;
+    }
+    .clock {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      width: 250px;
+      height: 250px;
+      background-color: rgba(2, 16, 38, 0.329);
+      border-radius: 50%;
+      margin: 90px;
+      animation: glow;
+      animation-duration: 4s;
+      animation-iteration-count: infinite;
+    }
+    @keyframes glow {
+      0%,
+      100% {
+        box-shadow: 0px 0px 32px -12px greenyellow;
+      }
+      80% {
+        box-shadow: 0px 0px 32px 3px greenyellow;
+      }
+      40% {
+        box-shadow: 0px 0px 32px 3px greenyellow;
+      }
+    }
+    .btn {
+      background-color: rgba(0, 0, 0, 0.141);
+      color: bisque;
+      font-size: 25px;
+      margin: 10px 20px;
+      padding: 15px;
+      border-radius: 90px;
+      border: none;
+      transition: 0.5s ease-in-out;
+    }
+    .btn:hover {
+      border: 1px solid rgb(153, 171, 118);
+      text-shadow: 1px 1px 3px white;
+      cursor: pointer;
+    }
+    h1 {
+      color: bisque;
+      font-size: 50px;
+      text-shadow: 2px 2px 2px white;
+      margin-top: 20px;
+    }
+    .laps {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      list-style: none;
+      color: bisque;
+      height: 250px;
+      width: 300px;
+      overflow: auto;
+      position: relative;
+      padding: 30px 0;
+    }
+    .lap-item {
+      background-color: rgba(0, 0, 0, 0.204);
+      width: 70%;
+      padding: 10px;
+      text-align: center;
+      border-radius: 50px;
+      margin-bottom: 10px;
+    }
+  </style>
+  <body>
+    <div class="main">
+      <div class="watch">
+        <div>
+          <h1>Stop <span>Watch</span></h1>
+        </div>
+        <div class="clock">
+          <p>
+            <span class="seconds">00</span> :
+            <span class="miliSeconds">00</span>
+          </p>
+        </div>
+        <div>
+          <button onclick="startWatch()" class="btn" id="start">Start</button>
+          <button onclick="stopWatch()" class="btn" id="stop">Stop</button>
+          <button onclick="Reload()" class="btn" id="reset">Reset</button>
+        </div>
+        <ul class="laps"></ul>
+      </div>
+    </div>
+    <script>
+      const start = document.getElementById("start");
+      const stop = document.getElementById("stop");
+      const reset = document.getElementById("reset");
+      const mili = document.getElementsByClassName("miliSeconds")[0];
+      const seconds = document.getElementsByClassName("seconds")[0];
+      const laps = document.getElementsByClassName("laps")[0];
+      let miliseconds = 0;
+      let second = 0;
+      let minutes = 0;
+      let Running = false;
+      let timerInterval;
+      function startWatch() {
+        if (Running) {
+          stopWatch();
+        } else {
+          Running = true;
+          timerCycle();
+        }
+      }
+      function stopWatch() {
+        if (!Running) {
+          return;
+        }
+        Running = false;
+        lap();
+        clearTimeout(timerInterval);
+      }
+      function Reload() {
+        location.reload();
+      }
+      function timerCycle() {
+        if (Running) {
+          miliseconds++;
+          if (miliseconds >= 100) {
+            miliseconds = 0;
+            second++;
+          }
+          seconds.textContent = String(second).padStart(2, "0");
+          mili.textContent = String(miliseconds).padStart(2, "0");
+          timerInterval = setTimeout(timerCycle, 1);
+        }
+      }
+      function lap() {
+        laps.style.display = "flex";
+        const li = document.createElement("li");
+        const timeStamp = document.createElement("span");
+        li.setAttribute("class", "lap-item");
+        timeStamp.setAttribute("class", "time-stamp");
+        timeStamp.innerHTML = `${seconds.textContent} : ${mili.textContent}`;
+        li.append(timeStamp);
+        laps.append(li);
+      }
+    </script>
+  </body>
+</html>
